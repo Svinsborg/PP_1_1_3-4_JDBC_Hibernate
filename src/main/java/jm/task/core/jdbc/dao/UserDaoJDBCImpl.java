@@ -2,39 +2,26 @@ package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
-
 import java.sql.*;
 import java.util.ArrayList;
-
-import java.util.Arrays;
 import java.util.List;
 
-public class UserDaoJDBCImpl extends Util implements UserDao {
+public class UserDaoJDBCImpl implements UserDao {
     public UserDaoJDBCImpl() {
-
-
     }
+    Connection con = Util.getConnection();
+    public void createUsersTable() {
 
-    public void createUsersTable()  {
-
-        try(Statement st = getConnection().createStatement()) {
+        try(Statement st = con.createStatement()) {
             int res = st.executeUpdate(SQLQuery.CREATE.QUERY);
             System.out.println("Создание таблицы: " + res);
-/*            st.addBatch("INSERT INTO `kata`.`users` (`name`, `lastName`, `age`) VALUES ('Andy', 'Filth', '22');");
-            st.addBatch("INSERT INTO `kata`.`users` (`name`, `lastName`, `age`) VALUES ('Bob', 'Sud', '31');");
-            st.addBatch("INSERT INTO `kata`.`users` (`name`, `lastName`, `age`) VALUES ('John', 'Jons', '45');");
-            st.addBatch("INSERT INTO `kata`.`users` (`name`, `lastName`, `age`) VALUES ('Filip', 'Big', '27');");
-            int[] ress = st.executeBatch();
-            System.out.println("Внесение данных таблицы: " + Arrays.toString(ress));
-            st.clearBatch();*/
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void dropUsersTable() {
-        try(Statement st = getConnection().createStatement()) {
+        try(Statement st = con.createStatement()) {
             int res = st.executeUpdate(SQLQuery.DROP.QUERY);
             System.out.println("Удаление таблицы: " + res);
         } catch (SQLException e) {
@@ -44,7 +31,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
 
     public void saveUser(String name, String lastName, byte age) {
 
-        try(PreparedStatement ps = getConnection().prepareStatement(SQLQuery.SAVE.QUERY)) {
+        try(PreparedStatement ps = con.prepareStatement(SQLQuery.SAVE.QUERY)) {
             ps.setString(1, name);
             ps.setString(2, lastName);
             ps.setInt(3, age);
@@ -57,7 +44,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
 
     public void removeUserById(long id) {
 
-        try (Connection con = getConnection(); PreparedStatement ps = con.prepareStatement(SQLQuery.REMOVE.QUERY)){
+        try (PreparedStatement ps = con.prepareStatement(SQLQuery.REMOVE.QUERY)){
             ps.setLong(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -68,7 +55,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
 
-        try (Statement st = getConnection().createStatement()){
+        try (Statement st = con.createStatement()){
 
             ResultSet res = st.executeQuery(SQLQuery.GET.QUERY);
 
@@ -90,7 +77,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
     }
 
     public void cleanUsersTable() {
-        try(Statement st = getConnection().createStatement()) {
+        try(Statement st = con.createStatement()) {
             int res = st.executeUpdate(SQLQuery.CLEAN.QUERY);
             System.out.println("Очистка таблицы: " + res);
         } catch (SQLException e) {

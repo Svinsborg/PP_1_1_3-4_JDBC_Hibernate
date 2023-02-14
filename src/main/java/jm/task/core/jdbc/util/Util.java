@@ -10,9 +10,8 @@ public class Util {
     private static final String DRIVER_NEW = "com.mysql.cj.jdbc.Driver";
     private static final String USER = "kata";
     private static final String PASSWORD = "KataKata";
-
-    public Connection getConnection() {
-        Connection conn = null;
+    private static Connection conn = null;
+    public static Connection getConnection() {
 
         try {
             Class.forName(DRIVER_NEW);
@@ -23,5 +22,14 @@ public class Util {
             System.out.println("Connection ERR!" + ">>" + e);
         }
         return conn;
+    }
+
+    public static void connectionClose(){
+        if(conn != null)
+            try {
+                conn.close();
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
     }
 }
