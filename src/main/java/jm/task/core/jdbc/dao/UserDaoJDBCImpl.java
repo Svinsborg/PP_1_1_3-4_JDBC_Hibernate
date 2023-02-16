@@ -11,7 +11,6 @@ public class UserDaoJDBCImpl implements UserDao {
     }
     Connection con = Util.getConnection();
     public void createUsersTable() {
-
         try(Statement st = con.createStatement()) {
             int res = st.executeUpdate(SQLQuery.CREATE.QUERY);
             System.out.println("Создание таблицы: " + res);
@@ -59,7 +58,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
             ResultSet res = st.executeQuery(SQLQuery.GET.QUERY);
 
-                while (res.next()) {
+                /*while (res.next()) {
                     User user = new User();
                     user.setId((long) res.getInt("id"));
                     user.setName(res.getString("name"));
@@ -67,7 +66,7 @@ public class UserDaoJDBCImpl implements UserDao {
                     user.setAge(res.getByte("age"));
 
                     users.add(user);
-                }
+                }*/
 
         } catch (SQLException e) {
             System.out.println("Данные отсутствуют ! >> " + e);
