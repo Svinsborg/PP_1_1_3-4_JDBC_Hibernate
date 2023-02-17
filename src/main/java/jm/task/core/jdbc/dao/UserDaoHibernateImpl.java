@@ -9,11 +9,15 @@ import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
     public UserDaoHibernateImpl() {}
+    private static Transaction tx = null;
+    // 1. Вынести sessionFactory в поле класса дао
+    // Что куда вынести, нужны подробности, свяжитесь во мной, мои одногрупники тоже понять не могут что имелось в виду!
+    // говорят что код +/- похож, только у них его приняли
 
     @Override
     public void createUsersTable() {
-        Transaction tx = null;
-        try(Session session = Util.getSessionFactory().openSession()) {
+
+        try ( Session session = Util.getSessionFactory().openSession() ) {
             tx = session.beginTransaction();
             Query createQuery = session.createSQLQuery(
                     "CREATE TABLE IF NOT EXISTS `kata`.`users` (\n" +
@@ -37,8 +41,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void dropUsersTable() {
-        Transaction tx = null;
-        try(Session session = Util.getSessionFactory().openSession()) {
+        try ( Session session = Util.getSessionFactory().openSession() ) {
             tx = session.beginTransaction();
             Query createQuery = session.createSQLQuery(
                     "DROP TABLE IF EXISTS `kata`.`users`;");
@@ -55,8 +58,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        Transaction tx = null;
-        try(Session session = Util.getSessionFactory().openSession()) {
+        try ( Session session = Util.getSessionFactory().openSession() ) {
             tx = session.beginTransaction();
             User user = new User(name, lastName, age);
             session.save(user);
@@ -73,8 +75,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void removeUserById(long id) { //TODO
-        Transaction tx = null;
-        try (Session session = Util.getSessionFactory().openSession()) {
+        try ( Session session = Util.getSessionFactory().openSession() ) {
             tx = session.beginTransaction();
             User user = new User();
             user.setId(id);
@@ -91,7 +92,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        try (Session session = Util.getSessionFactory().openSession()) {
+        try ( Session session = Util.getSessionFactory().openSession() ){
             return session.createQuery("from User", User.class).list();
         } catch (Exception e){
             e.printStackTrace();
@@ -102,7 +103,7 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void cleanUsersTable() { //TODO
         Transaction tx = null;
-        try(Session session = Util.getSessionFactory().openSession()) {
+        try ( Session session = Util.getSessionFactory().openSession() ) {
             tx = session.beginTransaction();
             Query createQuery = session.createSQLQuery(
                     "TRUNCATE `kata`.`users`;");
