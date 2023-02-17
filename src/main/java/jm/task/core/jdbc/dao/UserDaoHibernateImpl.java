@@ -30,7 +30,6 @@ public class UserDaoHibernateImpl implements UserDao {
                     "DEFAULT CHARACTER SET = utf8;");
             createQuery.executeUpdate();
             tx.commit();
-            session.close();
         } catch (Exception e) {
             if (tx != null) {
                 tx.rollback();
@@ -47,7 +46,6 @@ public class UserDaoHibernateImpl implements UserDao {
                     "DROP TABLE IF EXISTS `kata`.`users`;");
             createQuery.executeUpdate();
             tx.commit();
-            session.close();
         } catch (Exception e) {
             if (tx != null) {
                 tx.rollback();
@@ -64,7 +62,6 @@ public class UserDaoHibernateImpl implements UserDao {
             session.save(user);
             System.out.println("Пользователь с именем " + name + " добавлен!");
             tx.commit();
-            session.close();
         } catch (Exception e) {
             if (tx != null) {
                 tx.rollback();
@@ -81,7 +78,6 @@ public class UserDaoHibernateImpl implements UserDao {
             user.setId(id);
             session.delete(user);
             tx.commit();
-            session.close();
         } catch (Exception e){
             if (tx != null) {
                 tx.rollback();
@@ -109,7 +105,6 @@ public class UserDaoHibernateImpl implements UserDao {
                     "TRUNCATE `kata`.`users`;");
             int res = createQuery.executeUpdate();
             tx.commit();
-            session.close();
             System.out.println("Clear : " + res );
         } catch (Exception e){
             if (tx != null) {
