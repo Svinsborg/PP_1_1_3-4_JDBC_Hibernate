@@ -3,6 +3,7 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import java.util.List;
@@ -10,14 +11,13 @@ import java.util.List;
 public class UserDaoHibernateImpl implements UserDao {
     public UserDaoHibernateImpl() {}
     private static Transaction tx = null;
-    // 1. Вынести sessionFactory в поле класса дао
-    // Что куда вынести, нужны подробности, свяжитесь во мной, мои одногрупники тоже понять не могут что имелось в виду!
-    // говорят что код +/- похож, только у них его приняли
+
+    private final SessionFactory sessionFactory = Util.getSessionFactory();
 
     @Override
     public void createUsersTable() {
 
-        try ( Session session = Util.getSessionFactory().openSession() ) {
+        try (Session session = sessionFactory.openSession()) {
             tx = session.beginTransaction();
             Query createQuery = session.createSQLQuery(
                     "CREATE TABLE IF NOT EXISTS `kata`.`users` (\n" +
@@ -41,7 +41,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void dropUsersTable() {
-        try ( Session session = Util.getSessionFactory().openSession() ) {
+        try ( Session session = sessionFactory.openSession() ) {
             tx = session.beginTransaction();
             Query createQuery = session.createSQLQuery(
                     "DROP TABLE IF EXISTS `kata`.`users`;");
@@ -58,7 +58,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        try ( Session session = Util.getSessionFactory().openSession() ) {
+        try ( Session session = sessionFactory.openSession() ) {
             tx = session.beginTransaction();
             User user = new User(name, lastName, age);
             session.save(user);
@@ -75,7 +75,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void removeUserById(long id) { //TODO
-        try ( Session session = Util.getSessionFactory().openSession() ) {
+        try ( Session session = sessionFactory.openSession() ) {
             tx = session.beginTransaction();
             User user = new User();
             user.setId(id);
@@ -92,7 +92,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        try ( Session session = Util.getSessionFactory().openSession() ){
+        try ( Session session = sessionFactory.openSession() ){
             return session.createQuery("from User", User.class).list();
         } catch (Exception e){
             e.printStackTrace();
@@ -103,7 +103,7 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void cleanUsersTable() { //TODO
         Transaction tx = null;
-        try ( Session session = Util.getSessionFactory().openSession() ) {
+        try ( Session session = sessionFactory.openSession() ) {
             tx = session.beginTransaction();
             Query createQuery = session.createSQLQuery(
                     "TRUNCATE `kata`.`users`;");
